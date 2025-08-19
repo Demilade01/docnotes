@@ -23,13 +23,13 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
   const endpoint = useSettings((state) => state.endpoint);
   const saveFile = useSettings((state) => state.saveFile);
 
-  const listRef = React.useRef<HTMLDivElement>(null);
-  const mediaRef = React.useRef<MediaRecorder>();
-  const chunksRef = React.useRef<Array<Blob | Buffer | ArrayBuffer | Uint8Array>>([]);
+  const listRef = React.useRef<HTMLDivElement | null>(null);
+  const mediaRef = React.useRef<MediaRecorder | null>(null);
+  const chunksRef = React.useRef<Blob[]>([]);
   const animFrame = React.useRef<number>(0);
-  const timerCount = React.useRef<NodeJS.Timeout>();
+  const timerCount = React.useRef<number | null>(null);
 
-  const abortControllerRef = React.useRef<AbortController>();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const [sendCount, setSendCount] = React.useState(0);
 
@@ -137,13 +137,18 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
         audioBitsPerSecond: 128000,
       });
     }
+    if (!mediaRef.current) {
+      setReady(true);
+      checkAudioLevel(stream);
+      return;
+    }
     mediaRef.current.addEventListener("dataavailable", handleData);
     mediaRef.current.addEventListener("stop", handleStop);
     setReady(true);
     checkAudioLevel(stream);
   };
 
-  const handleData = (e: { data: Blob | Buffer | ArrayBuffer | Uint8Array }) => {
+  const handleData = (e: { data: Blob }) => {
     chunksRef.current.push(e.data);
   };
 
@@ -281,12 +286,15 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
 
   React.useEffect(() => {
     if (isCountDown) {
-      timerCount.current = setInterval(() => {
+      timerCount.current = window.setInterval(() => {
         countRef.current += 100;
       }, 100);
     }
     return () => {
-      clearInterval(timerCount.current);
+      if (timerCount.current !== null) {
+        clearInterval(timerCount.current);
+        timerCount.current = null;
+      }
     };
   }, [isCountDown]);
 

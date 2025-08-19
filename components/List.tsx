@@ -7,13 +7,13 @@ import { useTranscriptions } from "@/lib/stores/transcriptions";
 import ReplayButton from "@/components/ReplayButton";
 
 export default function List() {
-  const audioDomRef = React.useRef<HTMLAudioElement>();
+  const audioDomRef = React.useRef<HTMLAudioElement | null>(null);
   const transcribedList = useTranscriptions((state) => state.items);
   const deleteTranscription = useTranscriptions((state) => state.delete);
 
   React.useEffect(() => {
     audioDomRef.current = new Audio();
-    return audioDomRef.current?.remove();
+    return () => audioDomRef.current?.remove();
   }, []);
 
   return (
