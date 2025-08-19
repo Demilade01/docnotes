@@ -5,7 +5,7 @@ import { Pause, PlaySquare } from "lucide-react";
 
 type ReplayButtonProps = {
   filename: string;
-  audioDomRef: React.MutableRefObject<HTMLAudioElement | undefined>;
+  audioDomRef: React.MutableRefObject<HTMLAudioElement | null>;
 };
 
 export default function ReplayButton({ filename, audioDomRef }: ReplayButtonProps) {
