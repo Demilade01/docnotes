@@ -7,6 +7,10 @@ export default function Settings() {
   return (
     <main>
       <div className="mx-auto max-w-7xl py-6 px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+          <p className="mt-2 text-sm text-gray-600">Configure your recording and transcription preferences</p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-8">
           <SettingsInput
             id="prompt"

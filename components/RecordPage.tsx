@@ -302,12 +302,16 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
     <>
       <header className="bg-white shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-bold text-gray-900">Record Session Notes</h1>
+            <p className="mt-2 text-sm text-gray-600">Record audio notes for your client sessions</p>
+          </div>
           {!hasApiKey && (
             <div className="block mb-6 max-w-md mx-auto">
               <KeyInput
                 id="open-ai-api-key"
-                label="Open AI API key"
-                description="Paste your key here to test the functionality or clone this project from Github and set the env variable in .env.local"
+                label="OpenAI API Key"
+                description="Enter your OpenAI API key to enable speech-to-text transcription. For production use, set OPENAI_API_KEY in your environment variables."
               />
             </div>
           )}

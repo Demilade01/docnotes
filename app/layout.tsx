@@ -22,7 +22,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <div className="flex items-center">
                 <Link href="/">
                   <h1 className="text-lg md:text-xl tracking-tight text-gray-400 hover:text-white">
-                    NextJS OpenAI Whisper Starter
+                    DocNotes
                   </h1>
                 </Link>
                 <NavMenu />
