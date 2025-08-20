@@ -1,13 +1,19 @@
-# NextJS OpenAI Whisper Starter
-A Next.js starter project integrating OpenAI's Whisper API for speech-to-text functionality.
+# DocNotes
+Professional audio note-taking for therapists. Record, transcribe, and manage client session notes with AI-powered speech recognition.
 
 Live demo at [Vercel](https://nextjs-openai-whisper-starter-dm840kek9-jannden.vercel.app/)
 
-It uses only:
+## Features
+- **Audio Recording**: Browser-based recording with automatic silence detection
+- **AI Transcription**: OpenAI Whisper integration for accurate speech-to-text
+- **Session Management**: Organize and manage client session notes
+- **Professional UI**: Clean, accessible interface designed for therapists
+
+## Tech Stack
 - [NextJS](https://nextjs.org/) with [TailwindCSS](https://tailwindcss.com/)
-- [OpenAI API](https://platform.openai.com/)
-- [Zustand State Management](https://zustand-demo.pmnd.rs/)
-- [Lucide Icons](https://lucide.dev/)
+- [OpenAI API](https://platform.openai.com/) for speech recognition
+- [Zustand State Management](https://zustand-demo.pmnd.rs/) for state persistence
+- [Lucide Icons](https://lucide.dev/) for consistent iconography
 
 ## Getting Started
 

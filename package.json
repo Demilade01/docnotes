@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-openai-whisper-starter",
-  "description": "A Next.js starter project integrating OpenAI's Whisper API for speech-to-text functionality.",
+  "name": "docnotes",
+  "description": "Professional audio note-taking for therapists. Record, transcribe, and manage client session notes with AI-powered speech recognition.",
   "repository": "https://www.github.com/jannden/nextjs-openai-whisper-starter",
   "author": "Jannden",
   "license": "MIT",
@@ -14,12 +14,16 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.12",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "encoding": "^0.1.13",
     "lucide-react": "^0.540.0",
     "next": "15.4.7",
     "openai": "^5.12.2",
     "react": "^19",
     "react-dom": "^19",
+    "shadcn": "^2.10.0",
+    "tailwind-merge": "^3.3.1",
     "zustand": "^5.0.7"
   },
   "devDependencies": {
@@ -32,6 +36,7 @@
     "eslint-config-next": "15.4.7",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.12",
+    "tw-animate-css": "^1.3.7",
     "typescript": "^5"
   }
 }

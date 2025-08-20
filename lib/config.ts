@@ -1,6 +1,6 @@
 export const navItems = [
   {
-    label: "Get started",
+    label: "Record Notes",
     href: "/record",
   },
   {
