@@ -53,6 +53,10 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
 
   const [isMounted, setMounted] = React.useState(false);
 
+  // UI enhancements: lightweight toast + countdown state for display
+  const [toast, setToast] = React.useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [countMs, setCountMs] = React.useState(0);
+
   const checkAudioLevel = (stream: MediaStream) => {
     const audioContext = new AudioContext();
     const audioStreamSource = audioContext.createMediaStreamSource(stream);
@@ -200,13 +204,19 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
       if (response.status !== 200) {
         try {
           const result = await response.json();
-          setErrorMessage(`Error response ${response.status}: ${result?.error ?? "Unknown error"}`);
+          const message = `Error response ${response.status}: ${result?.error ?? "Unknown error"}`;
+          setErrorMessage(message);
+          setToast({ message, type: "error" });
         } catch (_e) {
           try {
             const text = await response.text();
-            setErrorMessage(`Error response ${response.status}: ${text || "No response body"}`);
+            const message = `Error response ${response.status}: ${text || "No response body"}`;
+            setErrorMessage(message);
+            setToast({ message, type: "error" });
           } catch (_e2) {
-            setErrorMessage(`Error response ${response.status}: No response body`);
+            const message = `Error response ${response.status}: No response body`;
+            setErrorMessage(message);
+            setToast({ message, type: "error" });
           }
         }
         console.error(response);
@@ -223,8 +233,11 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
         ...data,
         clientId: selectedClientId
       });
+      setErrorMessage("");
+      setToast({ message: "Note saved", type: "success" });
     } catch (err) {
       setErrorMessage("Error response, see log");
+      setToast({ message: "Failed to transcribe. Check logs.", type: "error" });
       console.log(err);
     } finally {
       setSendCount((prev) => prev - 1);
@@ -305,6 +318,7 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
     if (isCountDown) {
       timerCount.current = window.setInterval(() => {
         countRef.current += 100;
+        setCountMs(countRef.current);
       }, 100);
     }
     return () => {
@@ -314,6 +328,13 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
       }
     };
   }, [isCountDown]);
+
+  // Auto-dismiss toast after a short delay
+  React.useEffect(() => {
+    if (!toast) return;
+    const timeout = window.setTimeout(() => setToast(null), 2500);
+    return () => window.clearTimeout(timeout);
+  }, [toast]);
 
   return (
     <>
@@ -350,6 +371,22 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
             </div>
           ) : null}
 
+          {/* Status badges */}
+          <div className="mt-4 flex justify-center gap-2 text-xs">
+            <span className={`px-2 py-1 rounded-full ${isReady ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+              {isReady ? "Mic ready" : "Initializing mic..."}
+            </span>
+            {isRecording && (
+              <span className="px-2 py-1 rounded-full bg-red-100 text-red-700">Recording</span>
+            )}
+            {sendCount > 0 && (
+              <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700">Uploading…</span>
+            )}
+            {isCountDown && (
+              <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-800">Silence: {countMs}ms</span>
+            )}
+          </div>
+
           {!selectedClientId && (hasApiKey || !!key) && (
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-500">
@@ -362,13 +399,35 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
 
       <main>
         <div className="mx-auto max-w-7xl py-6 px-6 lg:px-8">
+          {errorMessage && (
+            <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {errorMessage}
+            </div>
+          )}
           <div ref={listRef}>
-            {!isReady && <div>{errorMessage}</div>}
+            {!isReady && <div className="text-sm text-gray-600">{errorMessage}</div>}
 
             {isMounted && isReady && <List />}
           </div>
         </div>
       </main>
+
+      {/* Lightweight toast */}
+      {toast && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <div
+            className={`min-w-[220px] rounded-md px-3 py-2 shadow-lg text-sm ${
+              toast.type === "success"
+                ? "bg-green-600 text-white"
+                : "bg-red-600 text-white"
+            }`}
+            role="status"
+            aria-live="polite"
+          >
+            {toast.message}
+          </div>
+        </div>
+      )}
     </>
   );
 }
