@@ -4,10 +4,12 @@ import React from "react";
 
 import { useSettings } from "@/lib/stores/settings";
 import { useTranscriptions } from "@/lib/stores/transcriptions";
+import { useClients } from "@/lib/stores/clients";
 
 import List from "@/components/List";
 import RecordButton from "@/components/RecordButton";
 import KeyInput from "@/components/KeyInput";
+import ClientSelector from "@/components/ClientSelector";
 import { useKey } from "@/lib/stores/key";
 
 export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
@@ -15,6 +17,8 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
   const dataCount = useTranscriptions((state) => state.count);
   const dataItems = useTranscriptions((state) => state.items);
   const addDataItems = useTranscriptions((state) => state.add);
+
+  const selectedClientId = useClients((state) => state.selectedClientId);
 
   const minDecibels = useSettings((state) => state.minDecibels);
   const maxPause = useSettings((state) => state.maxPause);
@@ -194,8 +198,17 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
       });
 
       if (response.status !== 200) {
-        const result = await response.json();
-        setErrorMessage(`Error response ${response.status}: ${result.error}`);
+        try {
+          const result = await response.json();
+          setErrorMessage(`Error response ${response.status}: ${result?.error ?? "Unknown error"}`);
+        } catch (_e) {
+          try {
+            const text = await response.text();
+            setErrorMessage(`Error response ${response.status}: ${text || "No response body"}`);
+          } catch (_e2) {
+            setErrorMessage(`Error response ${response.status}: No response body`);
+          }
+        }
         console.error(response);
         return;
       }
@@ -205,7 +218,11 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
       console.log("[received data]", new Date().toLocaleTimeString());
 
       const data = result?.data;
-      addDataItems(data);
+      // Associate the transcription with the selected client
+      addDataItems({
+        ...data,
+        clientId: selectedClientId
+      });
     } catch (err) {
       setErrorMessage("Error response, see log");
       console.log(err);
@@ -315,10 +332,16 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
               />
             </div>
           )}
+
+          {/* Client Selection */}
+          <div className="mb-6">
+            <ClientSelector />
+          </div>
+
           {hasApiKey || !!key ? (
             <div className="flex justify-center">
               <RecordButton
-                disabled={!isReady}
+                disabled={!isReady || !selectedClientId}
                 isRecording={isRecording}
                 state={startState}
                 onClick={handleStart}
@@ -326,6 +349,14 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
               />
             </div>
           ) : null}
+
+          {!selectedClientId && (hasApiKey || !!key) && (
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-500">
+                Please select a client above to start recording
+              </p>
+            </div>
+          )}
         </div>
       </header>
 

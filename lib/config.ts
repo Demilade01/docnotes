@@ -4,6 +4,10 @@ export const navItems = [
     href: "/record",
   },
   {
+    label: "Clients",
+    href: "/clients",
+  },
+  {
     label: "Settings",
     href: "/settings",
   },

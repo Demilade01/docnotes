@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { cleanInput, guidGenerator } from "@/lib/utils";
 import { whisper } from "@/lib/openai";
+import { toFile } from "openai/uploads";
 
 export async function POST(req) {
   const form = await req.formData();
@@ -32,12 +33,11 @@ export async function POST(req) {
 
   let fileSize = parseInt(blob.size);
 
-  let filename;
+  let filename = `${name}.webm`;
   let filepath;
   if (options.saveFile === "yes") {
     console.log("Saving file to disk");
     const buffer = Buffer.from(await blob.arrayBuffer());
-    filename = `${name}.webm`;
     filepath = `${path.join("public", "uploads", filename)}`;
 
     fs.writeFileSync(filepath, buffer);
@@ -57,9 +57,10 @@ export async function POST(req) {
   }
 
   try {
+    const fileForOpenAI = options.saveFile === "yes" ? fs.createReadStream(filepath) : await toFile(blob, filename);
     const transcription = await whisper({
       mode: options.endpoint,
-      file: options.saveFile === "yes" ? fs.createReadStream(filepath) : blob,
+      file: fileForOpenAI,
       response_format: "text",
       temperature: Number(options.temperature),
       language: options.language,
