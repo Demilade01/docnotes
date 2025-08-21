@@ -1,14 +1,18 @@
 export const navItems = [
   {
-    label: "Record Notes",
-    href: "/record",
+    label: "Dashboard",
+    href: "/",
   },
   {
     label: "Clients",
     href: "/clients",
   },
   {
-    label: "Settings",
-    href: "/settings",
+    label: "Notes",
+    href: "/record",
+  },
+  {
+    label: "Templates",
+    href: "/templates",
   },
 ];
