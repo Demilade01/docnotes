@@ -29,7 +29,7 @@ export default function ClientSelector() {
             Selected Client
           </CardTitle>
           <CardDescription>
-            You're recording notes for this client
+            You&apos;re recording notes for this client
           </CardDescription>
         </CardHeader>
         <CardContent>
