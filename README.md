@@ -1,7 +1,7 @@
 # DocNotes
 Professional audio note-taking for therapists. Record, transcribe, and manage client session notes with AI-powered speech recognition.
 
-Live demo at [Vercel](https://nextjs-openai-whisper-starter-dm840kek9-jannden.vercel.app/)
+Live demo at [Vercel](https://docnotes-ashen.vercel.app/)
 
 ## Features
 - **Audio Recording**: Browser-based recording with automatic silence detection
