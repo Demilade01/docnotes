@@ -16,30 +16,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="h-full">
-        <nav className="bg-gray-800">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <nav className="bg-white border-b border-gray-200 w-full">
+          <div className="w-full px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
                 <Link href="/">
-                  <h1 className="text-lg md:text-xl tracking-tight text-gray-400 hover:text-white">
+                  <h1 className="text-xl font-bold text-gray-900">
                     DocNotes
                   </h1>
                 </Link>
+              </div>
+              <div className="flex items-center">
                 <NavMenu />
+                <NavMenuMobileButton />
               </div>
-              <div className="hidden md:block">
-                <div className="ml-4 flex items-center md:ml-6">
-                  <Link
-                    href="https://github.com/Demilade01/docnotes"
-                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                  >
-                    <span className="absolute -inset-1.5"></span>
-                    <span className="sr-only">View GitHub</span>
-                    <Github />
-                  </Link>
-                </div>
-              </div>
-              <NavMenuMobileButton />
             </div>
           </div>
           <NavMenuMobile />
