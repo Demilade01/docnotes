@@ -58,7 +58,7 @@ export default function Dashboard() {
         {/* Welcome Message */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">Welcome back, Dr. Amelia Carter</h1>
-          <p className="mt-2 text-muted-foreground">Here's what's happening with your practice today</p>
+          <p className="mt-2 text-muted-foreground">Here&apos;s what&apos;s happening with your practice today</p>
         </div>
 
         {/* Key Metrics Cards */}
