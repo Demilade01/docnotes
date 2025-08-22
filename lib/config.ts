@@ -11,8 +11,4 @@ export const navItems = [
     label: "Notes",
     href: "/record",
   },
-  {
-    label: "Templates",
-    href: "/templates",
-  },
 ];
