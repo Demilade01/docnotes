@@ -11,22 +11,27 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className="h-full bg-gray-100">
+    <html lang="en" className="h-full">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="h-full">
-        <nav className="bg-white border-b border-gray-200 w-full">
-          <div className="w-full px-6 lg:px-8">
+      <body className="h-full bg-background">
+        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border shadow-sm">
+          <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
-                <Link href="/">
-                  <h1 className="text-xl font-bold text-gray-900">
-                    DocNotes
-                  </h1>
+                <Link href="/" className="group">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                      <span className="text-primary-foreground font-bold text-sm">D</span>
+                    </div>
+                    <h1 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                      DocNotes
+                    </h1>
+                  </div>
                 </Link>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center space-x-4">
                 <NavMenu />
                 <NavMenuMobileButton />
               </div>
@@ -35,7 +40,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <NavMenuMobile />
         </nav>
 
-        {children}
+        <main className="min-h-[calc(100vh-4rem)]">
+          {children}
+        </main>
       </body>
     </html>
   );

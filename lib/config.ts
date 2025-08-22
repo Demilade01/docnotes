@@ -8,7 +8,7 @@ export const navItems = [
     href: "/clients",
   },
   {
-    label: "Notes",
+    label: "Record",
     href: "/record",
   },
 ];

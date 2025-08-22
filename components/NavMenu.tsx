@@ -2,37 +2,45 @@
 
 import { usePathname } from "next/navigation";
 import { navItems } from "@/lib/config";
-import { Bell, User } from "lucide-react";
+import { Bell, User, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function NavMenu() {
   const pathname = usePathname();
 
   return (
-    <div className="hidden md:flex items-center space-x-6">
-      <div className="flex items-baseline space-x-6">
+    <div className="hidden md:flex items-center space-x-1">
+      <div className="flex items-center space-x-1">
         {navItems?.length &&
           navItems.map((item) => (
-            <a
+            <Button
               key={item.href}
-              href={item.href}
+              variant={pathname === item.href ? "default" : "ghost"}
+              size="sm"
+              asChild
               className={`${
                 pathname === item.href
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-600 hover:text-blue-600"
-              } px-3 py-2 text-sm font-medium transition-colors`}
-              aria-current={pathname === item.href ? "page" : undefined}
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+              } transition-all duration-200`}
             >
-              {item.label}
-            </a>
+              <a href={item.href} aria-current={pathname === item.href ? "page" : undefined}>
+                {item.label}
+              </a>
+            </Button>
           ))}
       </div>
-      <div className="flex items-center space-x-4">
-        <button className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
-          <Bell className="h-5 w-5" />
-        </button>
-        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-          <User className="h-4 w-4 text-gray-600" />
-        </div>
+
+      <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-border">
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+          <Bell className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+          <Settings className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full bg-accent hover:bg-accent/80">
+          <User className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
