@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, User, Calendar, Phone, Mail, Hash, Edit, Trash2, Users as UsersIcon } from "lucide-react";
+import { Search, Plus, User, Calendar, Phone, Mail, Hash, Edit, Trash2, Users as UsersIcon, X } from "lucide-react";
 
 export default function ClientsPage() {
   const { clients, selectedClientId, setSelectedClient, deleteClient } = useClients();
@@ -29,12 +29,17 @@ export default function ClientsPage() {
     }
   };
 
+  const clearSearch = () => {
+    setSearchTerm("");
+  };
+
   // Filter clients based on search term
   const filteredClients = clients.filter(client =>
     client.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.userId.toLowerCase().includes(searchTerm.toLowerCase())
+    client.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.phone.includes(searchTerm)
   );
 
   return (
@@ -109,17 +114,30 @@ export default function ClientsPage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search clients by name, email, or ID..."
+                  placeholder="Search clients by name, email, phone, or ID..."
                   value={searchTerm}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 pr-10"
                 />
+                {searchTerm && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
               <Button variant="outline" className="border-border">
                 <Calendar className="h-4 w-4 mr-2" />
                 Filter by Date
               </Button>
             </div>
+            {searchTerm && (
+              <div className="mt-3 text-sm text-muted-foreground">
+                Found {filteredClients.length} client{filteredClients.length !== 1 ? 's' : ''} matching "{searchTerm}"
+              </div>
+            )}
           </CardContent>
         </Card>
 
