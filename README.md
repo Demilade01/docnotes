@@ -156,13 +156,3 @@ The application includes comprehensive error handling for:
 3. Make your changes
 4. Submit a pull request
 
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgments
-
-- OpenAI for the Whisper API
-- shadcn/ui for the excellent component library
-- Vercel for the deployment platform
-- Next.js team for the amazing framework
