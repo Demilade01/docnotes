@@ -135,7 +135,7 @@ export default function ClientsPage() {
             </div>
             {searchTerm && (
               <div className="mt-3 text-sm text-muted-foreground">
-                Found {filteredClients.length} client{filteredClients.length !== 1 ? 's' : ''} matching "{searchTerm}"
+                Found {filteredClients.length} client{filteredClients.length !== 1 ? 's' : ''} matching &quot;{searchTerm}&quot;
               </div>
             )}
           </CardContent>
