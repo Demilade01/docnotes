@@ -4,7 +4,9 @@ import React from "react";
 import { useClients } from "@/lib/stores/clients";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, User, Calendar, Phone, Mail, Hash, Edit, Trash2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Search, Plus, User, Calendar, Phone, Mail, Hash, Edit, Trash2, Users as UsersIcon } from "lucide-react";
 
 export default function ClientsPage() {
   const { clients, selectedClientId, setSelectedClient, deleteClient } = useClients();
@@ -36,202 +38,299 @@ export default function ClientsPage() {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50">
-      {/* Left Sidebar */}
-      <div className="w-full lg:w-80 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 p-4 lg:p-6">
-        <div className="mb-4 lg:mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Clients</h2>
-
-          {/* Search Bar */}
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search clients"
-              value={searchTerm}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
-            />
-          </div>
-
-          {/* Add Client Button */}
-          <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Client
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 p-4 lg:p-6">
-        <div className="mb-4 lg:mb-6">
-          <h1 className="text-xl lg:text-2xl font-bold text-gray-900">Client List</h1>
-        </div>
-
-        {filteredClients.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="mx-auto h-12 w-12 text-gray-400">
-              <User className="h-12 w-12" />
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Client Management</h1>
+              <p className="mt-2 text-muted-foreground">Manage your client information and records</p>
             </div>
-            <h3 className="mt-2 text-sm font-semibold text-gray-900">
-              {searchTerm ? 'No clients found' : 'No clients yet'}
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {searchTerm ? 'Try adjusting your search terms' : 'Start by adding your first client'}
-            </p>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
+              <Plus className="h-4 w-4 mr-2" />
+              Add New Client
+            </Button>
           </div>
-                 ) : (
-           <div className="bg-white rounded-lg shadow overflow-hidden">
-             {/* Desktop Table */}
-             <div className="hidden lg:block overflow-x-auto">
-               <table className="w-full">
-                 <thead className="bg-gray-50">
-                   <tr>
-                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       First Name
-                     </th>
-                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       Last Name
-                     </th>
-                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       DOB
-                     </th>
-                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       Phone
-                     </th>
-                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       Email
-                     </th>
-                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       UserID
-                     </th>
-                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       Actions
-                     </th>
-                   </tr>
-                 </thead>
-                 <tbody className="bg-white divide-y divide-gray-200">
-                   {filteredClients.map((client) => (
-                     <tr key={client.id} className="hover:bg-gray-50">
-                       <td className="px-6 py-4 whitespace-nowrap">
-                         <div className="text-sm font-medium text-gray-900">
-                           {client.firstName}
-                         </div>
-                       </td>
-                       <td className="px-6 py-4 whitespace-nowrap">
-                         <div className="text-sm text-gray-900">
-                           {client.lastName}
-                         </div>
-                       </td>
-                       <td className="px-6 py-4 whitespace-nowrap">
-                         <div className="text-sm text-gray-500">
-                           {formatDate(client.dob)}
-                         </div>
-                       </td>
-                       <td className="px-6 py-4 whitespace-nowrap">
-                         <div className="text-sm text-gray-500">
-                           {client.phone}
-                         </div>
-                       </td>
-                       <td className="px-6 py-4 whitespace-nowrap">
-                         <div className="text-sm text-gray-500">
-                           {client.email}
-                         </div>
-                       </td>
-                       <td className="px-6 py-4 whitespace-nowrap">
-                         <div className="text-sm text-gray-500">
-                           {client.userId}
-                         </div>
-                       </td>
-                       <td className="px-6 py-4 whitespace-nowrap">
-                         <div className="flex items-center space-x-2">
-                           <Button
-                             variant="ghost"
-                             size="sm"
-                             onClick={() => setSelectedClient(client.id)}
-                             className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800"
-                           >
-                             <User className="h-4 w-4" />
-                           </Button>
-                           <Button
-                             variant="ghost"
-                             size="sm"
-                             className="h-8 w-8 p-0 text-gray-600 hover:text-gray-800"
-                           >
-                             <Edit className="h-4 w-4" />
-                           </Button>
-                           <Button
-                             variant="ghost"
-                             size="sm"
-                             onClick={() => handleDeleteClient(client.id)}
-                             className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
-                           >
-                             <Trash2 className="h-4 w-4" />
-                           </Button>
-                         </div>
-                       </td>
-                     </tr>
-                   ))}
-                 </tbody>
-               </table>
-             </div>
+        </div>
 
-             {/* Mobile Cards */}
-             <div className="lg:hidden">
-               {filteredClients.map((client) => (
-                 <div key={client.id} className="border-b border-gray-200 p-4 hover:bg-gray-50">
-                   <div className="flex items-center justify-between mb-3">
-                     <div>
-                       <h3 className="text-sm font-medium text-gray-900">
-                         {client.firstName} {client.lastName}
-                       </h3>
-                       <p className="text-xs text-gray-500">{client.userId}</p>
-                     </div>
-                     <div className="flex items-center space-x-1">
-                       <Button
-                         variant="ghost"
-                         size="sm"
-                         onClick={() => setSelectedClient(client.id)}
-                         className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800"
-                       >
-                         <User className="h-4 w-4" />
-                       </Button>
-                       <Button
-                         variant="ghost"
-                         size="sm"
-                         className="h-8 w-8 p-0 text-gray-600 hover:text-gray-800"
-                       >
-                         <Edit className="h-4 w-4" />
-                       </Button>
-                       <Button
-                         variant="ghost"
-                         size="sm"
-                         onClick={() => handleDeleteClient(client.id)}
-                         className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
-                       >
-                         <Trash2 className="h-4 w-4" />
-                       </Button>
-                     </div>
-                   </div>
-                   <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
-                     <div className="flex items-center gap-1">
-                       <Calendar className="h-3 w-3" />
-                       <span>{formatDate(client.dob)}</span>
-                     </div>
-                     <div className="flex items-center gap-1">
-                       <Phone className="h-3 w-3" />
-                       <span>{client.phone}</span>
-                     </div>
-                     <div className="flex items-center gap-1 col-span-2">
-                       <Mail className="h-3 w-3" />
-                       <span className="truncate">{client.email}</span>
-                     </div>
-                   </div>
-                 </div>
-               ))}
-             </div>
-           </div>
-         )}
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="card-hover">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Clients</p>
+                  <p className="text-2xl font-bold text-foreground">{clients.length}</p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <UsersIcon className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-hover">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Active Clients</p>
+                  <p className="text-2xl font-bold text-foreground">{clients.length}</p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
+                  <User className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-hover">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Selected Client</p>
+                  <p className="text-2xl font-bold text-foreground">
+                    {selectedClientId ? 'Active' : 'None'}
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <Hash className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Search and Filters */}
+        <Card className="mb-8">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search clients by name, email, or ID..."
+                  value={searchTerm}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Button variant="outline" className="border-border">
+                <Calendar className="h-4 w-4 mr-2" />
+                Filter by Date
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Clients List */}
+        {filteredClients.length === 0 ? (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <div className="mx-auto h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                <User className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-medium text-foreground mb-2">
+                {searchTerm ? 'No clients found' : 'No clients yet'}
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                {searchTerm ? 'Try adjusting your search terms' : 'Start by adding your first client'}
+              </p>
+              <Button className="bg-primary hover:bg-primary/90">
+                <Plus className="h-4 w-4 mr-2" />
+                Add First Client
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-6">
+            {/* Desktop Table */}
+            <Card className="hidden lg:block">
+              <CardHeader>
+                <CardTitle>Client Directory</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Client
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Date of Birth
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Contact
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          User ID
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-card divide-y divide-border">
+                      {filteredClients.map((client) => (
+                        <tr key={client.id} className="hover:bg-accent/50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span className="text-sm font-medium text-primary">
+                                  {client.firstName.charAt(0)}{client.lastName.charAt(0)}
+                                </span>
+                              </div>
+                              <div>
+                                <div className="text-sm font-medium text-foreground">
+                                  {client.firstName} {client.lastName}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {client.email}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-muted-foreground">
+                              {formatDate(client.dob)}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-muted-foreground">
+                              {client.phone}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-muted-foreground font-mono">
+                              {client.userId}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Badge
+                              variant={selectedClientId === client.id ? "default" : "secondary"}
+                              className="text-xs"
+                            >
+                              {selectedClientId === client.id ? "Selected" : "Active"}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedClient(client.id)}
+                                className="h-8 w-8 p-0 text-primary hover:text-primary/80 hover:bg-primary/10"
+                                title="Select Client"
+                              >
+                                <User className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                                title="Edit Client"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteClient(client.id)}
+                                className="h-8 w-8 p-0 text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                                title="Delete Client"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Mobile Cards */}
+            <div className="lg:hidden space-y-4">
+              {filteredClients.map((client) => (
+                <Card key={client.id} className="card-hover">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                          <span className="text-sm font-medium text-primary">
+                            {client.firstName.charAt(0)}{client.lastName.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-medium text-foreground">
+                            {client.firstName} {client.lastName}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">{client.userId}</p>
+                        </div>
+                      </div>
+                      <Badge
+                        variant={selectedClientId === client.id ? "default" : "secondary"}
+                        className="text-xs"
+                      >
+                        {selectedClientId === client.id ? "Selected" : "Active"}
+                      </Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        <span>{formatDate(client.dob)}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Phone className="h-4 w-4" />
+                        <span>{client.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground col-span-2">
+                        <Mail className="h-4 w-4" />
+                        <span className="truncate">{client.email}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedClient(client.id)}
+                        className="text-primary hover:text-primary/80 hover:bg-primary/10"
+                      >
+                        <User className="h-4 w-4 mr-1" />
+                        Select
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-foreground"
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteClient(client.id)}
+                        className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

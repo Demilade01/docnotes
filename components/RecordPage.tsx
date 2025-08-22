@@ -11,6 +11,9 @@ import RecordButton from "@/components/RecordButton";
 import KeyInput from "@/components/KeyInput";
 import ClientSelector from "@/components/ClientSelector";
 import { useKey } from "@/lib/stores/key";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Mic, MicOff, Upload, CheckCircle, AlertCircle, Clock } from "lucide-react";
 
 export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
   const key = useKey((state) => state.key);
@@ -234,7 +237,7 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
         clientId: selectedClientId
       });
       setErrorMessage("");
-      setToast({ message: "Note saved", type: "success" });
+      setToast({ message: "Note saved successfully!", type: "success" });
     } catch (err) {
       setErrorMessage("Error response, see log");
       setToast({ message: "Failed to transcribe. Check logs.", type: "error" });
@@ -332,99 +335,150 @@ export default function RecordPage({ hasApiKey }: { hasApiKey: boolean }) {
   // Auto-dismiss toast after a short delay
   React.useEffect(() => {
     if (!toast) return;
-    const timeout = window.setTimeout(() => setToast(null), 2500);
+    const timeout = window.setTimeout(() => setToast(null), 3000);
     return () => window.clearTimeout(timeout);
   }, [toast]);
 
   return (
     <>
-      <header className="bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Record Session Notes</h1>
-            <p className="mt-2 text-sm text-gray-600">Record audio notes for your client sessions</p>
-          </div>
-          {!hasApiKey && (
-            <div className="block mb-6 max-w-md mx-auto">
-              <KeyInput
-                id="open-ai-api-key"
-                label="OpenAI API Key"
-                description="Enter your OpenAI API key to enable speech-to-text transcription. For production use, set OPENAI_API_KEY in your environment variables."
-              />
-            </div>
-          )}
-
-          {/* Client Selection */}
-          <div className="mb-6">
-            <ClientSelector />
+      <div className="min-h-screen bg-background">
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold text-foreground mb-2">Record Session Notes</h1>
+            <p className="text-muted-foreground">Record audio notes for your client sessions with AI-powered transcription</p>
           </div>
 
+          {/* Setup Section */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-lg">Setup & Configuration</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {!hasApiKey && (
+                <div className="space-y-2">
+                  <KeyInput
+                    id="open-ai-api-key"
+                    label="OpenAI API Key"
+                    description="Enter your OpenAI API key to enable speech-to-text transcription. For production use, set OPENAI_API_KEY in your environment variables."
+                  />
+                </div>
+              )}
+
+              {/* Client Selection */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Select Client</label>
+                <ClientSelector />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recording Section */}
           {hasApiKey || !!key ? (
-            <div className="flex justify-center">
-              <RecordButton
-                disabled={!isReady || !selectedClientId}
-                isRecording={isRecording}
-                state={startState}
-                onClick={handleStart}
-                isSignalOn={sendCount > 0}
-              />
-            </div>
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="text-lg">Recording Controls</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex justify-center">
+                  <RecordButton
+                    disabled={!isReady || !selectedClientId}
+                    isRecording={isRecording}
+                    state={startState}
+                    onClick={handleStart}
+                    isSignalOn={sendCount > 0}
+                  />
+                </div>
+
+                {/* Status Indicators */}
+                <div className="flex flex-wrap justify-center gap-3">
+                  <Badge variant={isReady ? "default" : "secondary"} className="flex items-center gap-1">
+                    {isReady ? <CheckCircle className="h-3 w-3" /> : <AlertCircle className="h-3 w-3" />}
+                    {isReady ? "Mic Ready" : "Initializing..."}
+                  </Badge>
+
+                  {isRecording && (
+                    <Badge variant="destructive" className="flex items-center gap-1 animate-pulse">
+                      <Mic className="h-3 w-3" />
+                      Recording
+                    </Badge>
+                  )}
+
+                  {sendCount > 0 && (
+                    <Badge variant="secondary" className="flex items-center gap-1">
+                      <Upload className="h-3 w-3 animate-spin" />
+                      Processing...
+                    </Badge>
+                  )}
+
+                  {isCountDown && (
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      Silence: {(countMs / 1000).toFixed(1)}s
+                    </Badge>
+                  )}
+                </div>
+
+                {!selectedClientId && (hasApiKey || !!key) && (
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <MicOff className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">
+                      Please select a client above to start recording
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           ) : null}
 
-          {/* Status badges */}
-          <div className="mt-4 flex justify-center gap-2 text-xs">
-            <span className={`px-2 py-1 rounded-full ${isReady ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
-              {isReady ? "Mic ready" : "Initializing mic..."}
-            </span>
-            {isRecording && (
-              <span className="px-2 py-1 rounded-full bg-red-100 text-red-700">Recording</span>
-            )}
-            {sendCount > 0 && (
-              <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700">Uploading…</span>
-            )}
-            {isCountDown && (
-              <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-800">Silence: {countMs}ms</span>
-            )}
-          </div>
-
-          {!selectedClientId && (hasApiKey || !!key) && (
-            <div className="mt-4 text-center">
-              <p className="text-sm text-gray-500">
-                Please select a client above to start recording
-              </p>
-            </div>
-          )}
-        </div>
-      </header>
-
-      <main>
-        <div className="mx-auto max-w-7xl py-6 px-6 lg:px-8">
+          {/* Error Display */}
           {errorMessage && (
-            <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {errorMessage}
-            </div>
+            <Card className="mb-8 border-destructive/50">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 text-destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">Error</span>
+                </div>
+                <p className="text-sm text-destructive mt-1">{errorMessage}</p>
+              </CardContent>
+            </Card>
           )}
-          <div ref={listRef}>
-            {!isReady && <div className="text-sm text-gray-600">{errorMessage}</div>}
 
-            {isMounted && isReady && <List />}
-          </div>
+          {/* Notes List */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Session Notes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div ref={listRef} className="max-h-96 overflow-y-auto">
+                {!isReady && <div className="text-sm text-muted-foreground">{errorMessage}</div>}
+                {isMounted && isReady && <List />}
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+      </div>
 
-      {/* Lightweight toast */}
+      {/* Enhanced Toast */}
       {toast && (
         <div className="fixed bottom-4 right-4 z-50">
           <div
-            className={`min-w-[220px] rounded-md px-3 py-2 shadow-lg text-sm ${
+            className={`min-w-[280px] rounded-lg px-4 py-3 shadow-lg border ${
               toast.type === "success"
-                ? "bg-green-600 text-white"
-                : "bg-red-600 text-white"
+                ? "bg-green-50 border-green-200 text-green-800"
+                : "bg-red-50 border-red-200 text-red-800"
             }`}
             role="status"
             aria-live="polite"
           >
-            {toast.message}
+            <div className="flex items-center gap-2">
+              {toast.type === "success" ? (
+                <CheckCircle className="h-4 w-4 text-green-600" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-red-600" />
+              )}
+              <span className="text-sm font-medium">{toast.message}</span>
+            </div>
           </div>
         </div>
       )}
